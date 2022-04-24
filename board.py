@@ -28,6 +28,18 @@ class Board:
 
     def __iter__(self):
         return iter(self.board)
+
+
+    def __str__(self):
+        return str(array(self.board))
+
+
+    def clone(self):
+        cloned_board = deepcopy(self)
+        for row_index, row in enumerate(self):
+            for col_index, piece in enumerate(row):
+                cloned_board.board[row_index][col_index] = deepcopy(piece)
+        return cloned_board
     
 
     def set_starting_board(self):
@@ -148,10 +160,6 @@ class Board:
         new_board.remove(eaten_pieces)
         new_board.moving_piece = new_piece
         return new_board
-    
-
-    def _print_board(self):
-        print(array(self.board))
         
 
     def remove(self, pieces):
@@ -218,10 +226,6 @@ class Board:
         return {dest:eaten_pieces}
 
 
-    def evaluate(self):
-        return self.count_pieces(WHITE) - self.count_pieces(BLACK) + self.count_queens(WHITE) * 0.5 - self.count_queens(BLACK) * 0.5
-
-
     def get_all_pieces(self, color):
         pieces = []
         for row in self:
@@ -231,12 +235,3 @@ class Board:
                 if piece.color == color:
                     pieces.append(piece)
         return pieces
-
-
-    @property
-    def winner(self):
-        if self.count_pieces(BLACK) == 0:
-            return WHITE
-        elif self.count_pieces(WHITE) == 0:
-            return BLACK
-        return None
