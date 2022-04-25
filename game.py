@@ -1,20 +1,22 @@
 import pygame
 from board import Board
+from piece import Piece
 from consts import *
 
 
 class Game:
-    def __init__(self, board=None):
+    def __init__(self):
         self.window = pygame.display.set_mode(size=(WIDTH, HEIGHT))
         pygame.display.set_caption(TITLE)
-        self._init(board)
+        self._init()
         
 
-    def _init(self, board):
+    def _init(self):
         self.selected_piece = None
-        self.board = board or Board()
+        self.board = Board()
         self.turn = WHITE
         self.valid_moves = dict()
+        self.last_board = None
         
 
     def reset(self):
@@ -56,6 +58,7 @@ class Game:
     def _move(self, row, col):
         dest = self.board.get_piece(row, col)
         if (self.selected_piece) and ((row, col) in self.valid_moves):
+            self.set_last_board(self.board)
             self.board.move(self.selected_piece, row, col)
             eaten_pieces = self.valid_moves[(row, col)]
             self.board.remove(eaten_pieces)
@@ -67,7 +70,10 @@ class Game:
             self.change_turn()
             return True
         return False
-    
+
+
+    def set_last_board(self, board):
+        self.last_board = board.clone()
     
     def diff(self, boards):
         valid_moves = dict()
@@ -88,3 +94,9 @@ class Game:
     def ai_move(self, board):
         self.board = board
         self.change_turn()
+
+    def undo(self):
+        if self.last_board:
+            self.board = self.last_board
+        else:
+            self._init()
