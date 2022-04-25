@@ -3,7 +3,7 @@ from consts import *
 from game import Game
 from algorithm import minimax
 
-FPS = 200
+FPS = 60
 
 def get_row_col_from_mouse(pos):
     x, y = pos
