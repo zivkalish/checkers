@@ -100,24 +100,3 @@ class Game:
             self.board = self.last_board
         else:
             self._init()
-
-
-    def no_move_detection(self):
-        for row in self.board:
-            for piece in row:
-                if not isinstance(piece, Piece):
-                    continue
-                if not piece.color == self.turn:
-                    continue
-                jumps = self.board.get_one_jump_boards(piece)
-                regular_moves = self.board.get_none_jumps_boards(piece)
-                if jumps or regular_moves:
-                    return False
-        return True
-
-
-    @property
-    def winner(self):
-        if self.no_move_detection():
-            return WHITE if self.turn == BLACK else BLACK
-        return None

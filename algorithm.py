@@ -3,8 +3,8 @@ import pygame
 from consts import BLACK, WHITE
 
 def minimax(board, depth, max_player, game):
-	if depth == 0 or game.winner:
-		return evaluate(game), board
+	if depth == 0 or board.winner(game.turn):
+		return board.evaluate(game.turn), board
 	if max_player:
 		max_eval = float('-inf')
 		best_board = None
@@ -31,11 +31,3 @@ def get_all_boards(board, color):
 		valid_boards = board.calc_valid_boards(piece)
 		all_valid_boards += valid_boards
 	return all_valid_boards
-
-
-def evaluate(game):
-    if game.winner == WHITE:
-        return float("inf")
-    elif game.winner == BLACK:
-        return float("-inf")
-    return game.board.count_pieces(WHITE) - game.board.count_pieces(BLACK) + game.board.count_queens(WHITE) * 0.5 - game.board.count_queens(BLACK) * 0.5

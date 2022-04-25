@@ -235,3 +235,31 @@ class Board:
                 if piece.color == color:
                     pieces.append(piece)
         return pieces
+
+
+    def evaluate(self, turn):
+        if self.winner(turn) == WHITE:
+            return float("inf")
+        elif self.winner == BLACK:
+            return float("-inf")
+        return self.count_pieces(WHITE) - self.count_pieces(BLACK) + self.count_queens(WHITE) * 0.5 - self.count_queens(BLACK) * 0.5
+
+
+    def no_move_detection(self, color):
+        for row in self:
+            for piece in row:
+                if not isinstance(piece, Piece):
+                    continue
+                if not piece.color == color:
+                    continue
+                jumps = self.get_one_jump_boards(piece)
+                regular_moves = self.get_none_jumps_boards(piece)
+                if jumps or regular_moves:
+                    return False
+        return True
+
+
+    def winner(self, turn):
+        if self.no_move_detection(turn):
+            return WHITE if turn == BLACK else BLACK
+        return None
