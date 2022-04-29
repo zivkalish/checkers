@@ -31,6 +31,7 @@ class Game:
 
     def change_turn(self):
         self.turn = WHITE if self.turn == BLACK else BLACK
+        print(f"changed turn to {'white' if self.turn == WHITE else 'black'}")
         
 
     def select(self, row, col):
@@ -98,5 +99,6 @@ class Game:
     def undo(self):
         if self.last_board:
             self.board = self.last_board
+            self.selected_piece = None
         else:
             self._init()

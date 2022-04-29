@@ -21,6 +21,7 @@ def main(debug=True):
         clock.tick(FPS)
         if game.turn == computer_color:
             value, new_board = minimax(game.board, 4, max_player, game)
+            print(value)
             game.ai_move(new_board)
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:

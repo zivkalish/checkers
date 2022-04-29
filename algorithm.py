@@ -6,23 +6,20 @@ def minimax(board, depth, max_player, game):
 	if depth == 0 or board.winner(game.turn):
 		return board.evaluate(game.turn), board
 	if max_player:
-		max_eval = float('-inf')
-		best_board = None
-		for simulated_board in get_all_boards(board, WHITE):
-			evaluation = minimax(simulated_board, depth-1, False, game)[0]
-			max_eval = max(max_eval, evaluation)
-			if max_eval == evaluation:
-				best_board = simulated_board
-		return max_eval, best_board
+		color = WHITE
+		max_eval = float("-inf")
+		max_func = max
 	else:
-		min_eval = float('inf')
-		best_board = None
-		for simulated_board in get_all_boards(board, BLACK):
-			evaluation = minimax(simulated_board, depth-1, True, game)[0]
-			min_eval = min(min_eval, evaluation)
-			if min_eval == evaluation:
-				best_board = simulated_board
-		return min_eval, best_board
+		color = BLACK
+		max_eval = float("inf")
+		max_func = min
+	best_board = None
+	for simulated_board in get_all_boards(board, color):
+		evaluation = minimax(simulated_board, depth-1, not(max_player), game)[0]
+		max_eval = max_func(max_eval, evaluation)
+		if max_eval == evaluation:
+			best_board = simulated_board
+	return max_eval, best_board
 
 
 def get_all_boards(board, color):
