@@ -1,12 +1,5 @@
 from consts import BLACK, WHITE
 
-def get_all_boards(board, color):
-	all_valid_boards = []
-	for piece in board.get_all_pieces(color):
-		valid_boards = board.calc_valid_boards(piece)
-		all_valid_boards += valid_boards
-	return all_valid_boards
-
 
 def minimax(board, depth, turn, opponent_best_score=None):
 	if depth == 0 or board.winner(turn):
@@ -33,3 +26,11 @@ def minimax(board, depth, turn, opponent_best_score=None):
 		#	print(f"turn is: {turn}\ndepth is: {depth}\n simulated_board score is {best_score}\nopponent best score is: {opponent_best_score}")
 		#	break
 	return best_score, best_board
+
+
+def get_all_boards(board, color):
+	all_valid_boards = []
+	for piece in board.get_all_pieces(color):
+		valid_boards = board.calc_valid_boards(piece)
+		all_valid_boards += valid_boards
+	return all_valid_boards
