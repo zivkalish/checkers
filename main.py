@@ -20,7 +20,7 @@ def main(debug=True):
     while run:
         clock.tick(FPS)
         if game.turn == computer_color:
-            value, new_board = minimax(game.board, 5, max_player, game)
+            value, new_board = minimax(game.board, 4, game.turn)
             print(value)
             game.ai_move(new_board)
         for event in pygame.event.get():
