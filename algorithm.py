@@ -37,6 +37,7 @@ def get_all_boards(board, color):
 		all_valid_boards += valid_boards
 	return all_valid_boards
 
+
 def init_counter():
 	global COUNTER
 	value = COUNTER
