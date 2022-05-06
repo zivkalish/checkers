@@ -1,7 +1,9 @@
 from consts import BLACK, WHITE
-
+COUNTER = 0
 
 def minimax(board, depth, turn, opponent_best_score=None):
+	global COUNTER
+	COUNTER += 1
 	if depth == 0 or board.winner(turn):
 		return board.evaluate(turn), board
 	if turn == WHITE:
@@ -22,9 +24,9 @@ def minimax(board, depth, turn, opponent_best_score=None):
 		best_score = optimizer_func(score, best_score)
 		if best_score == score:
 			best_board = simulated_board
-		#if should_prune(best_score, opponent_best_score):
+		if should_prune(best_score, opponent_best_score):
 		#	print(f"turn is: {turn}\ndepth is: {depth}\n simulated_board score is {best_score}\nopponent best score is: {opponent_best_score}")
-		#	break
+			break
 	return best_score, best_board
 
 
@@ -34,3 +36,9 @@ def get_all_boards(board, color):
 		valid_boards = board.calc_valid_boards(piece)
 		all_valid_boards += valid_boards
 	return all_valid_boards
+
+def init_counter():
+	global COUNTER
+	value = COUNTER
+	COUNTER = 0
+	return value
