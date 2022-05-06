@@ -1,28 +1,33 @@
-from copy import deepcopy
-import pygame
 from consts import BLACK, WHITE
+COUNTER = 0
 
-def minimax(board, depth, max_player, game):
-	if depth == 0 or board.winner(game.turn):
-		return board.evaluate(game.turn), board
-	if max_player:
-		max_eval = float('-inf')
-		best_board = None
-		for simulated_board in get_all_boards(board, WHITE):
-			evaluation = minimax(simulated_board, depth-1, False, game)[0]
-			max_eval = max(max_eval, evaluation)
-			if max_eval == evaluation:
-				best_board = simulated_board
-		return max_eval, best_board
+def minimax(board, depth, turn, opponent_best_score=None):
+	global COUNTER
+	COUNTER += 1
+	if depth == 0 or board.winner(turn):
+		return board.evaluate(turn), board
+	if turn == WHITE:
+		best_score = float("-inf")
+		opponent_best_score = opponent_best_score or float("inf")
+		next_turn = BLACK
+		optimizer_func = max
+		should_prune = lambda score, opponent_best_explored_score: score >= opponent_best_explored_score
 	else:
-		min_eval = float('inf')
-		best_board = None
-		for simulated_board in get_all_boards(board, BLACK):
-			evaluation = minimax(simulated_board, depth-1, True, game)[0]
-			min_eval = min(min_eval, evaluation)
-			if min_eval == evaluation:
-				best_board = simulated_board
-		return min_eval, best_board
+		best_score = float("inf")
+		opponent_best_score = opponent_best_score or float("-inf")
+		next_turn = WHITE
+		optimizer_func = min
+		should_prune = lambda score, opponent_best_explored_score: score <= opponent_best_explored_score
+	best_board = None
+	for simulated_board in get_all_boards(board, turn):
+		score = minimax(simulated_board, depth-1, next_turn, best_score)[0]
+		best_score = optimizer_func(score, best_score)
+		if best_score == score:
+			best_board = simulated_board
+		if should_prune(best_score, opponent_best_score):
+		#	print(f"turn is: {turn}\ndepth is: {depth}\n simulated_board score is {best_score}\nopponent best score is: {opponent_best_score}")
+			break
+	return best_score, best_board
 
 
 def get_all_boards(board, color):
@@ -31,3 +36,10 @@ def get_all_boards(board, color):
 		valid_boards = board.calc_valid_boards(piece)
 		all_valid_boards += valid_boards
 	return all_valid_boards
+
+
+def init_counter():
+	global COUNTER
+	value = COUNTER
+	COUNTER = 0
+	return value

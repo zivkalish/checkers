@@ -1,7 +1,7 @@
 import pygame
 from consts import *
 from game import Game
-from algorithm import minimax
+from algorithm import minimax, init_counter
 
 FPS = 60
 
@@ -20,7 +20,9 @@ def main(debug=True):
     while run:
         clock.tick(FPS)
         if game.turn == computer_color:
-            value, new_board = minimax(game.board, 4, max_player, game)
+            score, new_board = minimax(game.board, 4, game.turn)
+            print(f"score is {score}")
+            print(f"called minimax {init_counter()} times")
             game.ai_move(new_board)
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
