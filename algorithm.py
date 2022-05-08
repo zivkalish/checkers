@@ -1,7 +1,9 @@
 from consts import BLACK, WHITE
+from board import Board
+
 COUNTER = 0
 
-def minimax(board, depth, turn, opponent_best_score=None):
+def minimax(board, depth, turn, opponent_best_score=None, with_pruning=True):
 	global COUNTER
 	COUNTER += 1
 	if depth == 0 or board.winner(turn):
@@ -11,22 +13,22 @@ def minimax(board, depth, turn, opponent_best_score=None):
 		opponent_best_score = opponent_best_score or float("inf")
 		next_turn = BLACK
 		optimizer_func = max
-		should_prune = lambda score, opponent_best_explored_score: score >= opponent_best_explored_score
+		should_prune = lambda score, opponent_best_explored_score: score > opponent_best_explored_score
 	else:
 		best_score = float("inf")
 		opponent_best_score = opponent_best_score or float("-inf")
 		next_turn = WHITE
 		optimizer_func = min
-		should_prune = lambda score, opponent_best_explored_score: score <= opponent_best_explored_score
+		should_prune = lambda score, opponent_best_explored_score: score < opponent_best_explored_score
 	best_board = None
 	for simulated_board in get_all_boards(board, turn):
-		score = minimax(simulated_board, depth-1, next_turn, best_score)[0]
+		score = minimax(simulated_board, depth-1, next_turn, best_score, with_pruning)[0]
 		best_score = optimizer_func(score, best_score)
 		if best_score == score:
 			best_board = simulated_board
-		if should_prune(best_score, opponent_best_score):
-		#	print(f"turn is: {turn}\ndepth is: {depth}\n simulated_board score is {best_score}\nopponent best score is: {opponent_best_score}")
-			break
+		if with_pruning:
+			if should_prune(best_score, opponent_best_score):
+				break
 	return best_score, best_board
 
 
@@ -43,3 +45,8 @@ def init_counter():
 	value = COUNTER
 	COUNTER = 0
 	return value
+
+
+def calc_depth(board):
+	eaten_pieces = 24 - (len(board.get_all_pieces(WHITE)) + len(board.get_all_pieces(BLACK)))
+	return int(eaten_pieces / 6) + 4
