@@ -1,7 +1,8 @@
 import pygame
 from consts import *
 from game import Game
-from algorithm import minimax, init_counter
+from algorithm import minimax, init_counter, calc_depth
+from time import sleep
 
 FPS = 60
 
@@ -11,7 +12,25 @@ def get_row_col_from_mouse(pos):
     return row, col
 
 
-def main(debug=True):
+def play_against_self():
+    game = Game()
+    clock = pygame.time.Clock()
+    while True:
+        clock.tick(FPS)
+        if game.turn == WHITE:
+            depth = calc_depth(game.board)
+            score, new_board = minimax(game.board, depth, game.turn)
+        else:
+            depth = 4
+            score, new_board = minimax(game.board, depth, game.turn, with_pruning=False)
+        print(f"calculated {depth} levels")
+        print(f"score is {score}")
+        print(f"called minimax {init_counter()} times")
+        game.ai_move(new_board)
+        game.update()
+
+
+def main(with_pruning, debug=False):
     run = True
     game = Game()
     clock = pygame.time.Clock()
@@ -20,7 +39,9 @@ def main(debug=True):
     while run:
         clock.tick(FPS)
         if game.turn == computer_color:
-            score, new_board = minimax(game.board, 4, game.turn)
+            depth = calc_depth(game.board)
+            print(f"calculating {depth} levels")
+            score, new_board = minimax(game.board, depth, game.turn, with_pruning=with_pruning)
             print(f"score is {score}")
             print(f"called minimax {init_counter()} times")
             game.ai_move(new_board)
@@ -42,4 +63,4 @@ def main(debug=True):
 
 
 if __name__ == '__main__':
-	main()
+    main(with_pruning=True, debug=True)
