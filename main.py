@@ -2,7 +2,6 @@ import pygame
 from consts import *
 from game import Game
 from algorithm import minimax, init_counter, calc_depth
-from time import sleep
 
 FPS = 60
 
